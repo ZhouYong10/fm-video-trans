@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>flv 视频播放示例</title>
+    <style type="text/css">
+
+        .demo-video{
+            background: #000;
+            width: 880px;
+            height: 560px;
+        }
+    </style>
+</head>
+<body>
+<h1>flv 视频播放示例</h1>
+
+<div id="app">
+    <video class="demo-video" ref="player"></video>
+</div>
+
+<script type="text/javascript" src="vue.js"></script>
+<script type="text/javascript" src="flv.min.js"></script>
+
+<script>
+    const rtsp = "rtsp-url";
+    const id = "1";
+    new Vue({
+        el: "#app",
+        data() {
+            return {
+                player: null,
+                interval: null
+            }
+        },
+        mounted() {
+            console.log('vue 示例挂在了')
+            if (flvjs.isSupported()) {
+                console.log('flvjs存在')
+                let video = this.$refs.player;
+                console.log(video, ' video 获取到了吗');
+                if (video) {
+                    console.log('video存在了')
+                    this.player = flvjs.createPlayer({
+                        type: "flv",
+                        isLive: true,
+                        hasAudio: false,
+                        url: `ws://localhost:8000/rtsp/${id}?url=${rtsp}`
+                    }, {
+                        enableStashBuffer: false,
+                        isLive: true,
+                        lazyLoad: false,
+                        lazyLoadMaxDuration: 0,
+                        lazyLoadRecoverDuration: 0,
+                        deferLoadAfterSourceOpen: false,
+                        fixAudioTimestampGap: false,
+                    });
+                    this.player.attachMediaElement(video);
+                    try {
+                        this.player.load();
+                        this.player.play();
+                        this.player.on(flvjs.Events.MEDIA_INFO, (some) => {
+                            console.log(JSON.stringify(some),  ' ========================')
+                        });
+                    }catch (e) {
+                        console.log(e);
+                    }
+
+                    this.interval = setInterval(() => {
+                        if (this.player.buffered.length > 0) {
+                            const diff = this.player.buffered.end(0) - this.player.currentTime
+                            if (diff > 0.5) {
+                                this.player.currentTime = this.player.buffered.end(0) - 0.01
+                            }
+                        }
+                    }, 1000)
+                }
+            }
+        },
+        beforeDestroy() {
+            this.player.destroy();
+            this.interval.clear();
+        }
+    })
+</script>
+</body>
+</html>

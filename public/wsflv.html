@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>flv 视频播放示例</title>
+    <style type="text/css">
+
+        .demo-video{
+            background: #000;
+            width: 880px;
+            height: 560px;
+        }
+    </style>
+</head>
+<body>
+<h1>flv 视频播放示例</h1>
+
+<div class="demo-video" id="flvplayer-app"></div>
+
+<script type="text/javascript" src="flvplayer.js"></script>
+
+<script>
+    const rtsp = "rtsp-url";
+    const id = "1";
+    let player = new FlvPlayer({
+        container: '#flvplayer-app',
+        live: true,
+        hasAudio: false,
+        control: false,
+        cache: false,
+        cors: true,
+        width: 800,
+        height: 500,
+        autoPlay: true,
+        url: `ws://localhost:8000/rtsp/${id}?url=${rtsp}`
+    });
+    try {
+        player.play();
+    }catch (e) {
+        console.log(e);
+    }
+</script>
+</body>
+</html>

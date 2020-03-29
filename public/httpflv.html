@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>flv 视频播放示例</title>
+    <style type="text/css">
+
+        .demo-video{
+            background: #000;
+            width: 880px;
+            height: 560px;
+        }
+    </style>
+</head>
+<body>
+<h1>http-flv 视频播放示例</h1>
+
+<div id="app">
+    <video class="demo-video" id="videoElement"></video>
+</div>
+<script type="text/javascript" src="flv.js"></script>
+
+<script>
+    if (flvjs.isSupported()) {
+        let videoElement = document.getElementById("videoElement");
+        let flvPlayer = flvjs.createPlayer({
+            type: "flv",
+            url: "http://localhost:8000/live/44fn.flv"
+        });
+        flvPlayer.attachMediaElement(videoElement);
+        flvPlayer.load();
+        flvPlayer.play();
+    }
+</script>
+</body>
+</html>
